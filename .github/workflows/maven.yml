@@ -21,11 +21,19 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+
     - name: Set up JDK 21
       uses: actions/setup-java@v4
       with:
         java-version: '21'
         distribution: 'temurin'
         cache: maven
-    - name: Build and run tests with Maven
-      run: mvn -B package --file pom.xml
+
+    # Step 1: Compile the code
+    - name: Compile with Maven
+      run: mvn compile --file pom.xml
+
+    # Step 2: Run verify (including formatting and tests)
+    - name: Verify and run tests with Maven
+      run: mvn verify --file pom.xml
+
