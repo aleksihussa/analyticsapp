@@ -2,11 +2,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
 
+  <modelVersion>4.0.0</modelVersion>
   <groupId>com.javathehutt</groupId>
   <artifactId>analyticsapp</artifactId>
   <version>1.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <!-- Modules -->
+  <modules>
+    <module>ui</module>
+    <module>data</module>
+    <module>service</module>
+  </modules>
 
   <properties>
     <maven.compiler.source>21</maven.compiler.source>
@@ -16,50 +24,46 @@
     <spotless.version>2.43.0</spotless.version>
   </properties>
 
-  <dependencies>
-    <!-- JUnit 5  -->
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <version>${junit.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
-      <version>${junit.version}</version>
-      <scope>test</scope>
-    </dependency>
+  <!-- Common Dependencies for all modules -->
+  <dependencyManagement>
+    <dependencies>
+      <!-- JUnit 5 -->
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-api</artifactId>
+        <version>${junit.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-engine</artifactId>
+        <version>${junit.version}</version>
+        <scope>test</scope>
+      </dependency>
 
-    <!-- JavaFX  -->
-    <dependency>
-      <groupId>org.openjfx</groupId>
-      <artifactId>javafx-controls</artifactId>
-      <version>${javafx.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.openjfx</groupId>
-      <artifactId>javafx-fxml</artifactId>
-      <version>${javafx.version}</version>
-    </dependency>
+      <!-- JavaFX -->
+      <dependency>
+        <groupId>org.openjfx</groupId>
+        <artifactId>javafx-controls</artifactId>
+        <version>${javafx.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openjfx</groupId>
+        <artifactId>javafx-fxml</artifactId>
+        <version>${javafx.version}</version>
+      </dependency>
 
-    <!-- Lombok  -->
-    <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
-      <version>1.18.34</version>
-      <scope>provided</scope>
-    </dependency>
+      <!-- Lombok -->
+      <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <version>1.18.34</version>
+        <scope>provided</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
-    <!-- Spotless (linter)  -->
-    <dependency>
-      <groupId>com.diffplug.spotless</groupId>
-      <artifactId>spotless-maven-plugin</artifactId>
-      <version>${spotless.version}</version>
-    </dependency>
-
-  </dependencies>
-
+  <!-- Project-wide build configurations -->
   <build>
     <plugins>
       <!-- Compiler plugin -->
@@ -96,8 +100,28 @@
             </configuration>
           </execution>
         </executions>
+        <configuration>
+          <addClasspath>true</addClasspath>
+          <mainClass>com.javathehutt.ui.Main</mainClass> <!-- Set the main class for running -->
+        </configuration>
       </plugin>
 
+      <!-- Maven JAR Plugin to define the entry point of the project -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.2.0</version>
+        <configuration>
+          <archive>
+            <manifest>
+              <addClasspath>true</addClasspath>
+              <mainClass>com.javathehutt.ui.Main</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+
+      <!-- Spotless (code formatter) -->
       <plugin>
         <groupId>com.diffplug.spotless</groupId>
         <artifactId>spotless-maven-plugin</artifactId>
@@ -110,11 +134,11 @@
           </java>
           <formats>
             <format>
-              <!-- define the files to apply to -->
+              <!-- Define files to apply formatting to -->
               <includes>
-                <include>.java</include>
+                <include>*.java</include>
               </includes>
-              <!-- define the steps to apply to those files -->
+              <!-- Define formatting rules -->
               <trimTrailingWhitespace />
               <endWithNewline />
               <indent>
@@ -131,7 +155,6 @@
             </goals>
           </execution>
         </executions>
-
       </plugin>
     </plugins>
   </build>
@@ -142,5 +165,6 @@
       <url>https://repo.maven.apache.org/maven2</url>
     </repository>
   </repositories>
+
 </project>
 
