@@ -16,7 +16,7 @@
     </properties>
 
     <dependencies>
-        <!-- JUnit 5 dependency -->
+        <!-- JUnit 5  -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
@@ -30,7 +30,7 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- JavaFX dependencies -->
+        <!-- JavaFX  -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
@@ -41,6 +41,15 @@
             <artifactId>javafx-fxml</artifactId>
             <version>${javafx.version}</version>
         </dependency>
+
+        <!-- Lombok  -->
+        <dependency>
+          <groupId>org.projectlombok</groupId>
+          <artifactId>lombok</artifactId>
+          <version>1.18.34</version>
+          <scope>provided</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
