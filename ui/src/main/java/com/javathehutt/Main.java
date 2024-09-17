@@ -5,5 +5,7 @@ public class Main {
     Service.service();
     Data.service();
     System.out.println("This is the whole applciations entrypoint");
+
+    UiModule.main(args);
   }
 }
