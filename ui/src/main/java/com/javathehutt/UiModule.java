@@ -73,7 +73,7 @@ public class UiModule extends Application {
     }
   }
 
-  public static void main(String[] args) {
+  public static void run(String[] args) {
     launch(args);
   }
 }

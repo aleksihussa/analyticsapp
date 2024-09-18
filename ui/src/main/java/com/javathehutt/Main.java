@@ -6,6 +6,6 @@ public class Main {
     Data.service();
     System.out.println("This is the whole applciations entrypoint");
 
-    UiModule.main(args);
+    UiModule.run(args);
   }
 }
