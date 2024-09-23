@@ -1,8 +1,8 @@
 package com.javathehutt.converters;
 
-import org.json.JSONArray;
-
 import com.google.common.base.Converter;
+import com.javathehutt.entities.TractorEntity;
+import org.json.JSONArray;
 
 public class TractorConverter extends Converter<JSONArray, TractorEntity> {
 
@@ -15,5 +15,4 @@ public class TractorConverter extends Converter<JSONArray, TractorEntity> {
   protected JSONArray doBackward(TractorEntity b) {
     throw new UnsupportedOperationException("Unimplemented method 'doBackward'");
   }
-
 }
