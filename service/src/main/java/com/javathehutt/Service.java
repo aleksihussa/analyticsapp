@@ -36,16 +36,16 @@ public class Service {
 
   /*
    * Return array format: [
-   *  {
-   *    indicator:        {id: AG.AGR.TRAC.NO, value: <id explanation>},
-   *    country:          {id: <code> , value: <country name>},
-   *    countryiso3code:  <country iso3 code>,
-   *    date:             <year>,
-   *    value:            <number of tractors> || null,
-   *    unit:             <empty string>,
-   *    obs_status:       <empty string>,
-   *    decimal:          0
-   *  }
+   * {
+   * indicator: {id: AG.AGR.TRAC.NO, value: <id explanation>},
+   * country: {id: <code> , value: <country name>},
+   * countryiso3code: <country iso3 code>,
+   * date: <year>,
+   * value: <number of tractors> || null,
+   * unit: <empty string>,
+   * obs_status: <empty string>,
+   * decimal: 0
+   * }
    * ]
    *
    * Relevant fields are date and value
@@ -75,10 +75,10 @@ public class Service {
   /*
    * Return object format (example years 2000-2003):
    * {
-   *    2000: 126.075,
-   *    2001: 129.534,
-   *    2002: 140.305,
-   *    2003: 171.609,
+   * 2000: 126.075,
+   * 2001: 129.534,
+   * 2002: 140.305,
+   * 2003: 171.609,
    * }
    *
    * value unit is "Billions of U.S. dollars"
