@@ -9,21 +9,23 @@ import org.json.JSONObject;
 
 public class Service {
 
-  private static final String BASE_TRACTOR_API_URL = "https://api.worldbank.org/v2/country";
+  private static final String BASE_AGRICULTURE_API_URL = "https://api.worldbank.org/v2/country";
   private static final String BASE_GDP_API_URL =
       "https://www.imf.org/external/datamapper/api/v1/indicator/NGDPD/country";
 
   public static void service() {
     System.out.println("Service");
+    // call testService here if you want to test it automatically
   }
 
   public static void testService() {
-    JSONArray tractors = Service.getTractorsByCountry("fin", 2000, 2005);
+    // agrEmpl = Agriculture employment
+    JSONArray agrEmplPercentage = Service.getAgrEmplByCountry("fin", 2000, 2005);
     JSONObject gdpYears = Service.getGdpByCountry("fin");
 
-    System.out.println("Tractors Finland:");
-    for (int i = 0; i < tractors.length(); i++) {
-      JSONObject data = tractors.getJSONObject(i);
+    System.out.println("Agriculture % Finland:");
+    for (int i = 0; i < agrEmplPercentage.length(); i++) {
+      JSONObject data = agrEmplPercentage.getJSONObject(i);
       System.out.println(data.toString());
     }
 
@@ -40,8 +42,8 @@ public class Service {
    *    indicator:        {id: AG.AGR.TRAC.NO, value: <id explanation>},
    *    country:          {id: <code> , value: <country name>},
    *    countryiso3code:  <country iso3 code>,
-   *    date:             <year>,
-   *    value:            <number of tractors> || null,
+   *    date:             <year (string)>,
+   *    value:            <agriculture % of total employment (float)> || null,
    *    unit:             <empty string>,
    *    obs_status:       <empty string>,
    *    decimal:          0
@@ -49,27 +51,26 @@ public class Service {
    * ]
    *
    * Relevant fields are date and value
-   *
    */
-  public static JSONArray getTractorsByCountry(String countryIso3Code, int startYear, int endYear) {
+  public static JSONArray getAgrEmplByCountry(String countryIso3Code, int startYear, int endYear) {
     String url =
         String.format(
-            "%s/%s/indicator/AG.AGR.TRAC.NO?date=%d:%d&format=json",
-            BASE_TRACTOR_API_URL, countryIso3Code, startYear, endYear);
+            "%s/%s/indicator/SL.AGR.EMPL.ZS?date=%d:%d&format=json",
+            BASE_AGRICULTURE_API_URL, countryIso3Code, startYear, endYear);
 
     String responseBody = fetchData(url);
 
     if (responseBody.isEmpty()) {
-      System.err.println("Encountered an error while fetching tractor api");
+      System.err.println("Encountered an error while fetching agriculture api");
       return new JSONArray();
     }
 
     JSONArray bodyJson = new JSONArray(responseBody);
-    JSONArray tractorData = bodyJson.getJSONArray(1);
+    JSONArray agricultureData = bodyJson.getJSONArray(1);
 
     // Do something with data
 
-    return tractorData;
+    return agricultureData;
   }
 
   /*
