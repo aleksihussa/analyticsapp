@@ -1,5 +1,7 @@
 package com.javathehutt;
 
+import com.javathehutt.converters.AgrEmplByCountryConverter;
+import com.javathehutt.converters.GDPConverter;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -16,6 +18,7 @@ public class Service {
   public static void service() {
     System.out.println("Service");
     // call testService here if you want to test it automatically
+    testService();
   }
 
   public static void testService() {
@@ -23,31 +26,31 @@ public class Service {
     JSONArray agrEmplPercentage = Service.getAgrEmplByCountry("fin", 2000, 2005);
     JSONObject gdpYears = Service.getGdpByCountry("fin");
 
-    System.out.println("Agriculture % Finland:");
-    for (int i = 0; i < agrEmplPercentage.length(); i++) {
-      JSONObject data = agrEmplPercentage.getJSONObject(i);
-      System.out.println(data.toString());
-    }
+    // System.out.println("Agriculture % Finland:");
+    // for (int i = 0; i < agrEmplPercentage.length(); i++) {
+    // JSONObject data = agrEmplPercentage.getJSONObject(i);
+    // System.out.println(data.toString());
+    // }
 
-    System.out.println("GPD Finland:");
-    for (String year : gdpYears.keySet()) {
-      double value = gdpYears.getDouble(year);
-      System.out.println("Year: " + year + ", Value: " + value);
-    }
+    // System.out.println("GPD Finland:");
+    // for (String year : gdpYears.keySet()) {
+    // double value = gdpYears.getDouble(year);
+    // System.out.println("Year: " + year + ", Value: " + value);
+    // }
   }
 
   /*
    * Return array format: [
-   *  {
-   *    indicator:        {id: AG.AGR.TRAC.NO, value: <id explanation>},
-   *    country:          {id: <code> , value: <country name>},
-   *    countryiso3code:  <country iso3 code>,
-   *    date:             <year (string)>,
-   *    value:            <agriculture % of total employment (float)> || null,
-   *    unit:             <empty string>,
-   *    obs_status:       <empty string>,
-   *    decimal:          0
-   *  }
+   * {
+   * indicator: {id: AG.AGR.TRAC.NO, value: <id explanation>},
+   * country: {id: <code> , value: <country name>},
+   * countryiso3code: <country iso3 code>,
+   * date: <year (string)>,
+   * value: <agriculture % of total employment (float)> || null,
+   * unit: <empty string>,
+   * obs_status: <empty string>,
+   * decimal: 0
+   * }
    * ]
    *
    * Relevant fields are date and value
@@ -70,6 +73,7 @@ public class Service {
 
     // Do something with data
 
+    System.out.println(new AgrEmplByCountryConverter().doForward(agricultureData));
     return agricultureData;
   }
 
@@ -102,6 +106,7 @@ public class Service {
 
     // Do something with data
 
+    System.out.println(new GDPConverter().doForward(gdpData));
     return gdpData;
   }
 

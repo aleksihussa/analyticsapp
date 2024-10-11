@@ -1,20 +1,35 @@
 package com.javathehutt.converters;
 
 import com.google.common.base.Converter;
-import com.javathehutt.entities.GDPEntity;
-import org.json.JSONArray;
+import com.javathehutt.GDP;
+import com.javathehutt.dto.GDPDto;
+import java.util.ArrayList;
+import java.util.Iterator;
+import org.json.JSONObject;
 
-public class GDPConverter extends Converter<JSONArray, GDPEntity> {
+public class GDPConverter extends Converter<JSONObject, GDP> {
 
   @Override
-  protected GDPEntity doForward(JSONArray a) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'doForward'");
+  public GDP doForward(JSONObject obj) {
+
+    final ArrayList<GDPDto> container = new ArrayList<GDPDto>();
+    final Iterator<String> keys = obj.keys();
+
+    while (keys.hasNext()) {
+      String yearKey = keys.next();
+      int year = Integer.parseInt(yearKey);
+      double value = obj.getDouble(yearKey);
+
+      GDPDto gdoDto = GDPDto.builder().year(year).value(value).build();
+      container.add(gdoDto);
+    }
+
+    return GDP.builder().values(container).build();
   }
 
   @Override
-  protected JSONArray doBackward(GDPEntity b) {
-    // TODO Auto-generated method stub
+  protected JSONObject doBackward(GDP gdp) {
+    // TODO will be implemented if needed
     throw new UnsupportedOperationException("Unimplemented method 'doBackward'");
   }
 }
