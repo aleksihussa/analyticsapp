@@ -14,7 +14,7 @@ The project is divided into three main modules: **UI**, **Service**, and **Data*
 3. The **Data** module processes the API data and creates data objects.
 4. The processed data objects are returned to the **UI** through the **Service**.
 
-This architecture enables parallel development, allowing multiple team members to work concurrently on the UI, Service, and Data modules. The design adheres to the principles of **object-oriented programming (OOP)** and leverages **Java design patterns** such as Converter pattern. As the project progressses, code components will have more dependency injection, abstractions and inheritance used.
+This architecture enables parallel development, allowing multiple team members to work concurrently on the UI, Service, and Data modules. The design adheres to the principles of **object-oriented programming (OOP)** and leverages **Java design patterns** such as Converter pattern which in the Gang of four design patterns is known as `Adapter pattern`. As the project progressses, code components will have more dependency injection, abstractions and inheritance used.
 
 The core principle behind the design (although naming and some conventions modified) **Model-View-Controller (MVC)** pattern to ensure a clean separation between the data model, business logic, and user interface.
 
