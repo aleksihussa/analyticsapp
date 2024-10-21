@@ -1,5 +1,6 @@
 package com.javathehutt;
 
+import com.javathehutt.dto.helpers.Country;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -47,7 +48,15 @@ public class UiModule extends Application {
 
     // Dropdown menu for countries
     ComboBox<String> countryDropdown = new ComboBox<>();
-    countryDropdown.getItems().addAll("Country A", "Country B", "Country C");
+    Service service = new Service();
+    List<Country> countries = service.getCountries();
+    if (countries != null) {
+      for (Country country : countries) {
+        countryDropdown.getItems().add(country.getValue());
+      }
+    } else {
+      System.err.println("Failed to load countries.");
+    }
     countryDropdown.setOnAction(event -> updateView(countryDropdown.getValue()));
 
     // Create the root layout and scene
