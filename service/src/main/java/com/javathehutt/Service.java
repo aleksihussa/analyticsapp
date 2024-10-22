@@ -2,10 +2,17 @@ package com.javathehutt;
 
 import com.javathehutt.converters.AgrEmplByCountryConverter;
 import com.javathehutt.converters.GDPConverter;
+import com.javathehutt.dto.helpers.Country;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -123,5 +130,32 @@ public class Service {
       e.printStackTrace();
       return "";
     }
+  }
+
+  public List<Country> getCountries() {
+    return getCountriesFromJsonFile("countries.json");
+  }
+
+  public static List<Country> getCountriesFromJsonFile(String filePath) {
+    List<Country> countries = new ArrayList<>();
+    try (InputStream inputStream = Service.class.getClassLoader().getResourceAsStream(filePath)) {
+      if (inputStream == null) {
+        throw new IllegalArgumentException("File not found: " + filePath);
+      }
+      String jsonText = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+      JSONObject countriesObject = new JSONObject(jsonText);
+      for (String countryName : countriesObject.keySet()) {
+        String iso3Code = countriesObject.getString(countryName);
+        Country country = Country.builder().id(iso3Code).value(countryName).build();
+        countries.add(country);
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      System.err.println("Failed to load countries.");
+    }
+
+    Collections.sort(countries, Comparator.comparing(Country::getValue));
+
+    return countries;
   }
 }

@@ -13,4 +13,9 @@ public class GDP {
 
   // if ui requires here we can implement methods to manipulate the data
   // or other fields like normalization, etc. can be implemented here
+
+  // Getter for values
+  public ArrayList<GDPDto> getValues() {
+    return values;
+  }
 }

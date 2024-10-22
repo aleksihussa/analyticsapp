@@ -8,4 +8,12 @@ import lombok.Data;
 public class GDPDto {
   private int year;
   private double value;
+
+  public int getYear() {
+    return year;
+  }
+
+  public double getValue() {
+    return value;
+  }
 }
