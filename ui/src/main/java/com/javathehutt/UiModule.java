@@ -1,8 +1,10 @@
 package com.javathehutt;
 
+import com.javathehutt.apis.ApiService;
 import com.javathehutt.converters.GDPConverter;
 import com.javathehutt.dto.GDPDto;
 import com.javathehutt.dto.helpers.Country;
+import com.javathehutt.helpers.ApiData;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -147,6 +149,10 @@ public class UiModule extends Application {
     tractorsSeries.getData().clear();
     gdpSeries.getData().clear();
 
+    // Fast implementation, move if needed in multiple places
+    ApiServiceFactory apiFactory = new ApiServiceFactory();
+    ApiService gdpService = apiFactory.createService("gdp");
+
     // Generate random data for tractors
     for (int year = startYear; year <= endYear; year++) {
       int tractors = random.nextInt(3000) + 1000;
@@ -154,7 +160,8 @@ public class UiModule extends Application {
     }
 
     // Fetch GDP data for the selected country
-    JSONObject gdpJSON = Service.getGdpByCountry(countryIsoCode);
+    ApiData gdpApiData = gdpService.fetchData(countryIsoCode, startYear, endYear);
+    JSONObject gdpJSON = gdpApiData.getJsonObject();
     GDP gdpData = new GDPConverter().doForward(gdpJSON);
     System.out.println(gdpData);
 
