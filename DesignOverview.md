@@ -4,9 +4,9 @@ The project is divided into three main modules: **UI**, **Service**, and **Data*
 
 - **UI Module**: The user interface layer is responsible for handling user interactions. It initiates service calls based on user input and displays the processed data.
 
-- **Service Module**: The service layer acts as an intermediary between the UI and the data handling logic. Upon receiving a request from the UI, it calls the appropriate API and forwards the response to the Data module for processing.
+- **Service Module**: The service layer acts as an intermediary between the UI and the data handling logic. Upon receiving a request from the UI, it calls the appropriate API and forwards the response to the Data module for processing. Uses the factory pattern for creating service objects `AgricultureService` and `GDPService`, both implementing the `ApiService` interface. The `Service` class is responsible for making the necessary HTTP requests.
 
-- **Data Module**: This module handles the conversion and management of data. It processes API responses and converts them into appropriate data objects, which are formed from the data returned by the service module.
+- **Data Module**: This module handles the conversion and management of data. It processes API responses and converts them into appropriate data objects, which are formed from the data returned by the service module. This module has base classes for `GDP` and 'Agricultural Employement By Country' (`AgrEmplByCountry`), and converters for converting `JSONobject`s to these two class objects.
 
 #### Control Flow:
 1. The **UI** calls the desired service.
@@ -21,14 +21,14 @@ The core principle behind the design (although naming and some conventions modif
 ### API usage
 Two external APIs are used:
 
-- **International Monetary Fund: DataMapper API, v1**
+1. **International Monetary Fund: DataMapper API, v1**
 
 The IMF Datamapper API is used for retrieving various economical data on different countried or regions. In our project we use it to retrieve GDP by year on different countries.
 
 **Example API call**
 
 ```
-https://www.imf.org/external/datamapper/api/v1/indicator/NGDPD/country/fi
+https://www.imf.org/external/datamapper/api/v1/indicator/NGDPD/country/fin
 ```
 
    **Return object format (example years 2000-2003, Billions of U.S Dollars):**
@@ -41,7 +41,7 @@ https://www.imf.org/external/datamapper/api/v1/indicator/NGDPD/country/fi
 }
 ```
   
-- **The World Bank: Indicators API, v2**
+2. **The World Bank: Indicators API, v2**
 
 The World Bank Indicators API v2 offers over 16 000 indicators from over 45 databases with data from up to 50 years ago. The themes are mostly in economy-relates matters, including international debt statistics, world development indicators, and 
 subnational poverty.
@@ -51,7 +51,7 @@ In this project the API is used to gain access to the percentage of employment b
 **Example API call**:
 
 ```
-https://api.worldbank.org/v2/country/fi/indicator/SL.AGR.EMPL.ZS?date=2000:%2003&format=json
+https://api.worldbank.org/v2/country/fin/indicator/SL.AGR.EMPL.ZS?date=2000:2003&format=json
 ```
 
 **Return array format (Relevant data being `date` and `value`):**
