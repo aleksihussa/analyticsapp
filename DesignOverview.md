@@ -18,6 +18,16 @@ This architecture enables parallel development, allowing multiple team members t
 
 The core principle behind the design (although naming and some conventions modified) **Model-View-Controller (MVC)** pattern to ensure a clean separation between the data model, business logic, and user interface.
 
+### API usage
+Two external APIs are used:
+
+- **International Monetary Fund: DataMapper API, v1**
+  
+- **The World Bank: Indicators API, v2**
+
+The IMF Datamapper API is used for retrieving various economical data on different countried or regions. In our project we use it to retrieve GDP by year on different countries.
+
+
 ### Mid-term self-evaluation
 
 Our initial design for the application architecture was to implement three modules: **UI**, **Service** and **Data**, which are also described above. The chosen architecture has supported implementation mainly because it has made simultaneous developing problem-free. This is due to the work rarely overlapping between modules. Also, the design ensures that each module has a single responsibility. For the rest of the project, we intend to continue with this design.
