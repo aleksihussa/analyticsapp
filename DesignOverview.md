@@ -22,11 +22,53 @@ The core principle behind the design (although naming and some conventions modif
 Two external APIs are used:
 
 - **International Monetary Fund: DataMapper API, v1**
-  
-- **The World Bank: Indicators API, v2**
 
 The IMF Datamapper API is used for retrieving various economical data on different countried or regions. In our project we use it to retrieve GDP by year on different countries.
 
+**Example API call**
+
+```
+https://www.imf.org/external/datamapper/api/v1/indicator/NGDPD/country/fi
+```
+
+   **Return object format (example years 2000-2003, Billions of U.S Dollars):**
+```
+{
+  2000: 126.075,
+  2001: 129.534,
+  2002: 140.305,
+  2003: 171.609,
+}
+```
+  
+- **The World Bank: Indicators API, v2**
+
+The World Bank Indicators API v2 offers over 16 000 indicators from over 45 databases with data from up to 50 years ago. The themes are mostly in economy-relates matters, including international debt statistics, world development indicators, and 
+subnational poverty.
+
+In this project the API is used to gain access to the percentage of employment being in the agricultural sector in a country.
+
+**Example API call**:
+
+```
+https://api.worldbank.org/v2/country/fi/indicator/SL.AGR.EMPL.ZS?date=2000:%2003&format=json
+```
+
+**Return array format (Relevant data being `date` and `value`):**
+```
+[
+  {
+    indicator: {id: AG.AGR.TRAC.NO, value: <id explanation>},
+    country: {id: <code> , value: <country name>},
+    countryiso3code: <country iso3 code>,
+    date: <year (string)>,
+    value: <agriculture % of total employment (float)> || null,
+    unit: <empty string>,
+    obs_status: <empty string>,
+    decimal: 0
+  }
+]
+```
 
 ### Mid-term self-evaluation
 
