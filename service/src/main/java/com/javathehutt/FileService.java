@@ -10,14 +10,11 @@ import java.io.FileWriter;
 
 public interface FileService {
 
-  *
-  @param filePath,      full valid
-  path to
-  the file, starting
-  from the level*
-  project is
-  run from*@return jsonElement*@throws Exception*/
-
+  /**
+   * @param filePath, full valid path to the file, starting from the level project is run from
+   * @return jsonElement
+   * @throws Exception
+   */
   public static JsonElement read(String filePath) throws Exception {
     try {
       BufferedReader reader = new BufferedReader(new FileReader(filePath));
@@ -28,16 +25,15 @@ public interface FileService {
       System.out.println("Error with file read: " + e);
       return null;
     }
-  };
+  }
+  ;
 
   /**
-   * @param filePath,      full valid path to the file, starting from the level
-   *                       project is run from
+   * @param filePath, full valid path to the file, starting from the level project is run from
    * @param elementToWrite
    * @return
    * @throws Exception
    */
-
   public static boolean write(String filePath, JsonElement elementToWrite) throws Exception {
     try {
       FileWriter writer = new FileWriter(filePath);
@@ -50,5 +46,6 @@ public interface FileService {
       System.out.println("Error with file write: " + e);
       return false;
     }
-  };
+  }
+  ;
 }
