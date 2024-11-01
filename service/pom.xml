@@ -1,39 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-    <!-- Parent project reference -->
-    <parent>
-        <groupId>com.javathehutt</groupId>
-        <artifactId>analyticsapp</artifactId>
-        <version>1.0-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath> <!-- Corrected relative path to parent POM -->
-    </parent>
-
-    <!-- Module information -->
+  <!-- Parent project reference -->
+  <parent>
     <groupId>com.javathehutt</groupId>
-    <artifactId>service</artifactId>
+    <artifactId>analyticsapp</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath> <!-- Corrected relative path to parent POM -->
+  </parent>
 
-    <!-- Inherit compiler properties from the parent POM -->
-    <properties>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
-    </properties>
+  <!-- Module information -->
+  <groupId>com.javathehutt</groupId>
+  <artifactId>service</artifactId>
+  <version>1.0-SNAPSHOT</version>
 
-    <!-- Dependencies specific to the service module can be added here -->
-    <dependencies>
-        <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>20240303</version>
-        </dependency>
-        <dependency>
-            <groupId>com.javathehutt</groupId>
-            <artifactId>data</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-    </dependencies>
+  <!-- Inherit compiler properties from the parent POM -->
+  <properties>
+    <maven.compiler.source>21</maven.compiler.source>
+    <maven.compiler.target>21</maven.compiler.target>
+  </properties>
+
+  <!-- Dependencies specific to the service module can be added here -->
+  <dependencies>
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+      <version>20240303</version>
+    </dependency>
+    <dependency>
+      <groupId>com.javathehutt</groupId>
+      <artifactId>data</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.8.8</version>
+    </dependency>
+  </dependencies>
 </project>
