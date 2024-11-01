@@ -40,10 +40,10 @@ https://www.imf.org/external/datamapper/api/v1/indicator/NGDPD/country/fin
   2003: 171.609,
 }
 ```
-  
+
 2. **The World Bank: Indicators API, v2**
 
-The World Bank Indicators API v2 offers over 16 000 indicators from over 45 databases with data from up to 50 years ago. The themes are mostly in economy-relates matters, including international debt statistics, world development indicators, and 
+The World Bank Indicators API v2 offers over 16 000 indicators from over 45 databases with data from up to 50 years ago. The themes are mostly in economy-relates matters, including international debt statistics, world development indicators, and
 subnational poverty.
 
 In this project the API is used to gain access to the percentage of employment being in the agricultural sector in a country.
@@ -74,6 +74,10 @@ https://api.worldbank.org/v2/country/fin/indicator/SL.AGR.EMPL.ZS?date=2000:2003
 
 Our initial design for the application architecture was to implement three modules: **UI**, **Service** and **Data**, which are also described above. The chosen architecture has supported implementation mainly because it has made simultaneous developing problem-free. This is due to the work rarely overlapping between modules. Also, the design ensures that each module has a single responsibility. For the rest of the project, we intend to continue with this design.
 
-As one could maybe deduce from the previous paragraph, we have been able to stick to the original design very well. The "inner" designs of some of the modules have been modified slightly along the way though, for example to follow some design pattern. Implementation of the base features has been quite clear during the whole process: what needs to be done, where, when, etc. To address how the design corresponds to quality, we have planned the application to be relatively easily tested. Also, the design follows separation of concerns. 
+As one could maybe deduce from the previous paragraph, we have been able to stick to the original design very well. The "inner" designs of some of the modules have been modified slightly along the way though, for example to follow some design pattern. Implementation of the base features has been quite clear during the whole process: what needs to be done, where, when, etc. To address how the design corresponds to quality, we have planned the application to be relatively easily tested. Also, the design follows separation of concerns.
 
-We believe we have at least somehow implemented all the main classes needed to take the project to the finish line. The remaining work will not necessarily require any notable changes – instead, it will be related to connecting the pieces and building some small things onto what already exists. Additionally, tests need to be implemented. Finally, the guideline requirements regarding the actual code at this point should be fulfilled with ease. 
+We believe we have at least somehow implemented all the main classes needed to take the project to the finish line. The remaining work will not necessarily require any notable changes – instead, it will be related to connecting the pieces and building some small things onto what already exists. Additionally, tests need to be implemented. Finally, the guideline requirements regarding the actual code at this point should be fulfilled with ease.
+
+
+### Use of AI
+Our use of AI has for the most parts focused on using Github copilot to aid and speed up our programming. Also, when we were throwing ideas around in the beginning, we used ChatGPT's ideas as a source for the idea we ended up with.
