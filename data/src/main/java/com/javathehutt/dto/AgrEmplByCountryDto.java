@@ -24,7 +24,7 @@ public class AgrEmplByCountryDto {
   private Indicator indicator;
   private Country country;
   private String countryIso3Code;
-  private String date;
+  private int year;
   @Nullable private Double value;
   private String unit;
   private String obsStatus;

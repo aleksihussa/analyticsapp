@@ -1,11 +1,14 @@
 package com.javathehutt;
 
 import com.javathehutt.apis.ApiService;
+import com.javathehutt.converters.AgrEmplByCountryConverter;
 import com.javathehutt.converters.GDPConverter;
+import com.javathehutt.dto.AgrEmplByCountryDto;
 import com.javathehutt.dto.GDPDto;
 import com.javathehutt.dto.helpers.Country;
 import com.javathehutt.helpers.ApiData;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
@@ -23,6 +26,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class UiModule extends Application {
@@ -55,8 +59,8 @@ public class UiModule extends Application {
     gdpSeries.setName("GDP");
 
     List<XYChart.Series<String, Number>> seriesList = new ArrayList<>();
-    seriesList.add(tractorsSeries);
     seriesList.add(gdpSeries);
+    seriesList.add(tractorsSeries);
     lineChart.getData().addAll(seriesList);
 
     // Dropdown menu for countries
@@ -65,6 +69,17 @@ public class UiModule extends Application {
     List<Country> countries = service.getCountries();
     if (countries != null) {
       countryDropdown.getItems().addAll(countries);
+
+      Country finland =
+          countries.stream()
+              .filter(country -> "Finland".equals(country.getValue()))
+              .findFirst()
+              .orElse(null);
+      // Set Finland as the default value
+      if (finland != null) {
+        countryDropdown.setValue(finland);
+        updateView(finland.getId(), 1990, 2024);
+      }
     } else {
       System.err.println("Failed to load countries.");
     }
@@ -111,8 +126,8 @@ public class UiModule extends Application {
               startYearDropdown.getItems().add(year);
               endYearDropdown.getItems().add(year);
             });
-    startYearDropdown.setValue(2010);
-    endYearDropdown.setValue(2020);
+    startYearDropdown.setValue(1990);
+    endYearDropdown.setValue(2024);
 
     // Add listeners to update the view when the year dropdowns change
     startYearDropdown.setOnAction(event -> updateViewIfValid(countryDropdown));
@@ -144,7 +159,6 @@ public class UiModule extends Application {
   }
 
   private void updateView(String countryIsoCode, int startYear, int endYear) {
-    System.out.println("Updating view for country: " + countryIsoCode);
     Random random = new Random();
     tractorsSeries.getData().clear();
     gdpSeries.getData().clear();
@@ -152,25 +166,47 @@ public class UiModule extends Application {
     // Fast implementation, move if needed in multiple places
     ApiServiceFactory apiFactory = new ApiServiceFactory();
     ApiService gdpService = apiFactory.createService("gdp");
+    ApiService agricultureService = apiFactory.createService("agriculture");
 
-    // Generate random data for tractors
-    for (int year = startYear; year <= endYear; year++) {
-      int tractors = random.nextInt(3000) + 1000;
-      tractorsSeries.getData().add(new XYChart.Data<>(String.valueOf(year), tractors));
-    }
+    // Fetch agriculture data for the selected country
+    ApiData agricultureApiData = agricultureService.fetchData(countryIsoCode, startYear, endYear);
+    JSONArray agricultureJSON = agricultureApiData.getJsonArray();
+    AgrEmplByCountry agricultureData = new AgrEmplByCountryConverter().doForward(agricultureJSON);
+    agricultureData.getValues().sort(Comparator.comparing(AgrEmplByCountryDto::getYear));
+
+    System.out.println(agricultureData);
 
     // Fetch GDP data for the selected country
     ApiData gdpApiData = gdpService.fetchData(countryIsoCode, startYear, endYear);
     JSONObject gdpJSON = gdpApiData.getJsonObject();
     GDP gdpData = new GDPConverter().doForward(gdpJSON);
+    gdpData.getValues().sort(Comparator.comparing(GDPDto::getYear));
+
     System.out.println(gdpData);
+
+    // Add agriculture data to tractorsSeries
+    if (agricultureData != null && !agricultureData.getValues().isEmpty()) {
+      for (AgrEmplByCountryDto agrDto : agricultureData.getValues()) {
+        int year = agrDto.getYear();
+        if (year >= startYear && year <= endYear) {
+          Double value = agrDto.getValue();
+          if (value != null) {
+            tractorsSeries.getData().add(new XYChart.Data<>(String.valueOf(year), value));
+          }
+        }
+      }
+    } else {
+      System.err.println("Failed to load agriculture data for country: " + countryIsoCode);
+    }
 
     if (gdpData != null && !gdpData.getValues().isEmpty()) {
       for (GDPDto gdpDto : gdpData.getValues()) {
         int year = gdpDto.getYear();
         if (year >= startYear && year <= endYear) {
-          double gdp = gdpDto.getValue();
-          gdpSeries.getData().add(new XYChart.Data<>(String.valueOf(year), gdp));
+          Double value = gdpDto.getValue();
+          if (value != null) {
+            gdpSeries.getData().add(new XYChart.Data<>(String.valueOf(year), value));
+          }
         }
       }
     } else {
