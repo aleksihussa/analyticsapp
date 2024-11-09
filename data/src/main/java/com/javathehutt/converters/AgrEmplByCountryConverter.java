@@ -31,13 +31,15 @@ public class AgrEmplByCountryConverter extends Converter<JSONArray, AgrEmplByCou
                           .value(obj.getJSONObject("country").getString("value"))
                           .build())
                   .countryIso3Code(obj.getString("countryiso3code"))
-                  .date(obj.getString("date"))
+                  .year(Integer.parseInt(obj.getString("date")))
                   .value(obj.isNull("value") ? null : obj.getDouble("value"))
                   .unit(obj.getString("unit"))
                   .obsStatus(obj.getString("obs_status"))
                   .decimal(obj.getInt("decimal"))
                   .build());
         });
+
+    // values.sort(Comparator.comparing(AgrEmplByCountryDto::getDate));
 
     return AgrEmplByCountry.builder().values(values).build();
   }

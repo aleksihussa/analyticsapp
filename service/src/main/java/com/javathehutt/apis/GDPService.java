@@ -1,7 +1,6 @@
 package com.javathehutt.apis;
 
 import com.javathehutt.Service;
-import com.javathehutt.converters.GDPConverter;
 import com.javathehutt.helpers.ApiData;
 import org.json.JSONObject;
 
@@ -42,7 +41,7 @@ public class GDPService implements ApiService {
 
     // Do something with data
 
-    System.out.println(new GDPConverter().doForward(gdpData));
+    // System.out.println(new GDPConverter().doForward(gdpData));
     return new ApiData(gdpData);
   }
 }

@@ -5,7 +5,6 @@
 package com.javathehutt.apis;
 
 import com.javathehutt.Service;
-import com.javathehutt.converters.AgrEmplByCountryConverter;
 import com.javathehutt.helpers.ApiData;
 import org.json.JSONArray;
 
@@ -19,7 +18,7 @@ public class AgricultureService implements ApiService {
    * indicator: {id: AG.AGR.TRAC.NO, value: <id explanation>},
    * country: {id: <code> , value: <country name>},
    * countryiso3code: <country iso3 code>,
-   * date: <year (string)>,
+   * year: <year (int)>,
    * value: <agriculture % of total employment (float)> || null,
    * unit: <empty string>,
    * obs_status: <empty string>,
@@ -48,7 +47,7 @@ public class AgricultureService implements ApiService {
 
     // Do something with data
 
-    System.out.println(new AgrEmplByCountryConverter().doForward(agricultureData));
+    // System.out.println(new AgrEmplByCountryConverter().doForward(agricultureData));
     return new ApiData(agricultureData);
   }
 }

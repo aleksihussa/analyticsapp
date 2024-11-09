@@ -37,5 +37,7 @@ ENV JAVA_HOME="/opt/javafx-sdk-17.0.2"
 COPY --from=build /app/ui/target/*.jar ./
 COPY --from=build /app/data/target/*.jar ./
 COPY --from=build /app/service/target/*.jar ./
+COPY --from=build /root/.m2/repository/org/json/json/20240303/json-20240303.jar ./
+COPY --from=build /root/.m2/repository/com/google/guava/guava/33.3.0-jre/guava-33.3.0-jre.jar ./
 
-ENTRYPOINT ["sh", "-c", "Xvfb :99 -screen 0 1024x768x16 & x11vnc -display :99 -forever -nopw -rfbport 5900 & export DISPLAY=:99 && java -Djava.awt.headless=true --module-path /opt/javafx-sdk-17.0.2/lib --add-modules javafx.controls,javafx.fxml -cp 'ui-1.0-SNAPSHOT.jar:data-1.0-SNAPSHOT.jar:service-1.0-SNAPSHOT.jar' com.javathehutt.Main"]
+ENTRYPOINT ["sh", "-c", "Xvfb :99 -screen 0 1024x768x16 & x11vnc -display :99 -forever -nopw -rfbport 5900 & export DISPLAY=:99 && java -Djava.awt.headless=true --module-path /opt/javafx-sdk-17.0.2/lib --add-modules javafx.controls,javafx.fxml -cp 'ui-1.0-SNAPSHOT.jar:data-1.0-SNAPSHOT.jar:service-1.0-SNAPSHOT.jar:json-20240303.jar:guava-33.3.0-jre.jar' com.javathehutt.Main"]
