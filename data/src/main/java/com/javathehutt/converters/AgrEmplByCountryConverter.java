@@ -39,7 +39,8 @@ public class AgrEmplByCountryConverter extends Converter<JSONArray, AgrEmplByCou
                   .build());
         });
 
-    // values.sort(Comparator.comparing(AgrEmplByCountryDto::getDate));
+    // Sort by year (if needed later)
+    // values.sort(Comparator.comparing(AgrEmplByCountryDto::getYear));
 
     return AgrEmplByCountry.builder().values(values).build();
   }

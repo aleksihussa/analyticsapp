@@ -7,11 +7,11 @@ import com.javathehutt.dto.AgrEmplByCountryDto;
 import com.javathehutt.dto.GDPDto;
 import com.javathehutt.dto.helpers.Country;
 import com.javathehutt.helpers.ApiData;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
 import javafx.application.Application;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
@@ -22,7 +22,6 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.json.JSONArray;
@@ -47,7 +46,6 @@ public class UiModule extends Application {
     yAxisGDP.setLabel("GDP (Billions of USD)");
 
     NumberAxis yAxisAgriculture = new NumberAxis();
-    yAxisAgriculture.setLabel("Agriculture % of total employment");
 
     // LineChart for primary Y axis GDP data
     lineChart = new LineChart<>(xAxis, yAxisGDP);
@@ -55,17 +53,17 @@ public class UiModule extends Application {
 
     // Create the series for GDP
     gdpSeries = new XYChart.Series<>();
-    gdpSeries.setName("GDP");
 
     // Create the series for agriculture
     agricultureSeries = new XYChart.Series<>();
-    agricultureSeries.setName("Agriculture Employment");
+    agricultureSeries.setName("Agriculture % of total employment");
 
     lineChart.getData().add(gdpSeries);
 
     // Create the MultipleAxesLineChart
-    LineChartModule LineChartModule = new LineChartModule(lineChart, Color.BLUE);
-    LineChartModule.addSeries(agricultureSeries, Color.GREEN);
+    LineChartModule LineChartModule =
+        new LineChartModule(lineChart, "#00eb52", "GDP and Agriculture Employment", "Year");
+    LineChartModule.addSeries(agricultureSeries, "#ff7f50");
 
     // Dropdown menu for countries
     ComboBox<Country> countryDropdown = new ComboBox<>();
@@ -138,11 +136,27 @@ public class UiModule extends Application {
     endYearDropdown.setOnAction(event -> updateViewIfValid(countryDropdown));
     countryDropdown.setOnAction(event -> updateViewIfValid(countryDropdown));
 
+    Label countriesLabel = new Label("Country:");
+    countriesLabel.setStyle("-fx-font-weight: bold;");
+    HBox countryBox = new HBox(10, countriesLabel, countryDropdown);
+    countryBox.setAlignment(Pos.CENTER);
+
     // Create the root layout and scene
     Label dashLabel = new Label("-");
-    HBox yearInputBox = new HBox(10, startYearDropdown, dashLabel, endYearDropdown);
-    HBox inputBox = new HBox(10, countryDropdown, yearInputBox);
-    VBox vbox = new VBox(10, inputBox, LineChartModule);
+    dashLabel.setStyle("-fx-font-weight: bold;");
+
+    Label timelineLabel = new Label("Timeline:");
+    timelineLabel.setStyle("-fx-font-weight: bold;");
+    HBox yearInputBox = new HBox(10, timelineLabel, startYearDropdown, dashLabel, endYearDropdown);
+    yearInputBox.setAlignment(Pos.CENTER);
+
+    HBox inputBox = new HBox(50, countryBox, yearInputBox);
+    inputBox.setAlignment(Pos.CENTER);
+
+    VBox chartModule = LineChartModule.getChartModule();
+    VBox vbox = new VBox(10, inputBox, chartModule);
+    vbox.setAlignment(Pos.TOP_CENTER);
+
     Scene scene = new Scene(vbox, 800, 600);
 
     primaryStage.setScene(scene);
@@ -180,7 +194,6 @@ public class UiModule extends Application {
     ApiData agricultureApiData = agricultureService.fetchData(countryIsoCode, startYear, endYear);
     JSONArray agricultureJSON = agricultureApiData.getJsonArray();
     AgrEmplByCountry agricultureData = new AgrEmplByCountryConverter().doForward(agricultureJSON);
-    agricultureData.getValues().sort(Comparator.comparing(AgrEmplByCountryDto::getYear));
 
     System.out.println(agricultureData);
 
@@ -188,7 +201,6 @@ public class UiModule extends Application {
     ApiData gdpApiData = gdpService.fetchData(countryIsoCode, startYear, endYear);
     JSONObject gdpJSON = gdpApiData.getJsonObject();
     GDP gdpData = new GDPConverter().doForward(gdpJSON);
-    gdpData.getValues().sort(Comparator.comparing(GDPDto::getYear));
 
     System.out.println(gdpData);
 
