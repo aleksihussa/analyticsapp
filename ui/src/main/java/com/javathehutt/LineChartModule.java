@@ -1,7 +1,5 @@
 package com.javathehutt;
 
-import java.util.HashMap;
-import java.util.Map;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -11,51 +9,62 @@ import javafx.scene.Node;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
+import javafx.scene.layout.VBox;
 
 public class LineChartModule extends StackPane {
 
   private final LineChart baseChart;
   private final ObservableList<LineChart> backgroundCharts = FXCollections.observableArrayList();
-  private final Map<LineChart, Color> chartColorMap = new HashMap<>();
+
+  private final String chartTitleText;
+  private final String xAxisLabelText;
 
   private final double yAxisWidth = 60;
   private final double yAxisSeparation = 20;
 
-  public LineChartModule(LineChart baseChart, Color lineColor) {
+  // Constructor for LineChartModule
+  public LineChartModule(
+      LineChart baseChart, String lineColor, String chartTitleText, String xAxisLabelText) {
     this.baseChart = baseChart;
+    this.chartTitleText = chartTitleText;
+    this.xAxisLabelText = xAxisLabelText;
 
-    chartColorMap.put(baseChart, lineColor);
+    // Style base chart
+    styleBaseChart(baseChart, lineColor);
 
-    styleBaseChart(baseChart);
-    baseChart
-        .getData()
-        .forEach(series -> styleChartLine((XYChart.Series<Number, Number>) series, "#00eb52"));
-    baseChart
-        .getYAxis()
-        .lookup(".axis-label")
-        .setStyle("-fx-text-fill: #00eb52; -fx-font-weight: bold;");
-    setFixedAxisWidth(baseChart);
-    setAlignment(Pos.CENTER_LEFT);
-
+    // Add listener to rebuild chart when data changes
     backgroundCharts.addListener((Observable observable) -> rebuildChart());
     rebuildChart();
   }
 
-  private void styleBaseChart(LineChart baseChart) {
+  // Base chart styling
+  private void styleBaseChart(LineChart baseChart, String lineColor) {
     baseChart.setLegendVisible(false);
     baseChart.getXAxis().setAutoRanging(false);
-    baseChart.getXAxis().setAnimated(false);
-    baseChart.getYAxis().setAnimated(false);
+    baseChart.setAnimated(false);
+    baseChart.getXAxis().setLabel("");
+
+    styleChartLine((XYChart.Series<Number, Number>) baseChart.getData().get(0), lineColor);
+
+    baseChart
+        .getYAxis()
+        .lookup(".axis-label")
+        .setStyle("-fx-text-fill: " + lineColor + "; -fx-font-weight: bold;");
+
+    setFixedAxisWidth(baseChart);
+    setAlignment(Pos.CENTER_LEFT);
   }
 
+  // Set fixed width for y-axis
   private void setFixedAxisWidth(LineChart chart) {
     chart.getYAxis().setPrefWidth(yAxisWidth);
     chart.getYAxis().setMaxWidth(yAxisWidth);
   }
 
+  // Rebuilding returned chart
   private void rebuildChart() {
     getChildren().clear();
 
@@ -65,6 +74,7 @@ public class LineChartModule extends StackPane {
     }
   }
 
+  // Resize base chart
   private Node resizeBaseChart(LineChart lineChart) {
     HBox hBox = new HBox(lineChart);
     hBox.setAlignment(Pos.CENTER_LEFT);
@@ -84,12 +94,12 @@ public class LineChartModule extends StackPane {
     return lineChart;
   }
 
+  // Resize background chart
   private Node resizeBackgroundChart(LineChart lineChart) {
     HBox hBox = new HBox(lineChart);
     hBox.setAlignment(Pos.CENTER_LEFT);
     hBox.prefHeightProperty().bind(heightProperty());
     hBox.prefWidthProperty().bind(widthProperty());
-    hBox.setMouseTransparent(true);
 
     lineChart
         .minWidthProperty()
@@ -109,14 +119,15 @@ public class LineChartModule extends StackPane {
     return hBox;
   }
 
-  public void addSeries(XYChart.Series series, Color lineColor) {
+  // Add new series to chart
+  public void addSeries(XYChart.Series series, String lineColor) {
     NumberAxis yAxis = new NumberAxis();
     NumberAxis xAxis = new NumberAxis();
 
     // style x-axis
     xAxis.setAutoRanging(false);
     xAxis.setVisible(false);
-    xAxis.setOpacity(0.0); // somehow the upper setVisible does not work
+    xAxis.setOpacity(0.0);
     xAxis.lowerBoundProperty().bind(((NumberAxis) baseChart.getXAxis()).lowerBoundProperty());
     xAxis.upperBoundProperty().bind(((NumberAxis) baseChart.getXAxis()).upperBoundProperty());
     xAxis.tickUnitProperty().bind(((NumberAxis) baseChart.getXAxis()).tickUnitProperty());
@@ -131,22 +142,23 @@ public class LineChartModule extends StackPane {
     lineChart.setLegendVisible(false);
     lineChart.getData().add(series);
 
-    styleBackgroundChart(lineChart);
-    styleChartLine((XYChart.Series<Number, Number>) lineChart.getData().get(0), "#ff7f50");
+    // Style background chart
+    styleBackgroundChart(lineChart, lineColor);
+    backgroundCharts.add(lineChart);
+  }
+
+  // Style background chart
+  private void styleBackgroundChart(LineChart lineChart, String lineColor) {
+    Node contentBackground = lineChart.lookup(".chart-content").lookup(".chart-plot-background");
+    contentBackground.setStyle("-fx-background-color: transparent;");
 
     lineChart
         .getYAxis()
         .lookup(".axis-label")
-        .setStyle("-fx-text-fill: #ff7f50; -fx-font-weight: bold;");
+        .setStyle("-fx-text-fill: " + lineColor + "; -fx-font-weight: bold;");
+
     setFixedAxisWidth(lineChart);
-
-    chartColorMap.put(lineChart, lineColor);
-    backgroundCharts.add(lineChart);
-  }
-
-  private void styleBackgroundChart(LineChart lineChart) {
-    Node contentBackground = lineChart.lookup(".chart-content").lookup(".chart-plot-background");
-    contentBackground.setStyle("-fx-background-color: transparent;");
+    styleChartLine((XYChart.Series<Number, Number>) lineChart.getData().get(0), lineColor);
 
     lineChart.setVerticalZeroLineVisible(false);
     lineChart.setHorizontalZeroLineVisible(false);
@@ -154,6 +166,7 @@ public class LineChartModule extends StackPane {
     lineChart.setHorizontalGridLinesVisible(false);
   }
 
+  // Style chart line and symbols
   private void styleChartLine(XYChart.Series<Number, Number> series, String colorCode) {
     Node seriesLine = series.getNode().lookup(".chart-series-line");
     if (seriesLine != null) {
@@ -177,5 +190,18 @@ public class LineChartModule extends StackPane {
                 }
               }
             });
+  }
+
+  public VBox getChartModule() {
+    Label chartTitle = new Label(this.chartTitleText);
+    chartTitle.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+
+    Label xAxisLabel = new Label(this.xAxisLabelText);
+    xAxisLabel.setStyle("-fx-text-fill: " + baseChart.getYAxis().lookup(".axis-label").getStyle());
+
+    VBox chartModule = new VBox(5, chartTitle, this, xAxisLabel);
+    chartModule.setAlignment(Pos.CENTER);
+
+    return chartModule;
   }
 }

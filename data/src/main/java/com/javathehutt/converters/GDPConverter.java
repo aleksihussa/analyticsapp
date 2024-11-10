@@ -24,7 +24,8 @@ public class GDPConverter extends Converter<JSONObject, GDP> {
       container.add(gdoDto);
     }
 
-    // container.sort(Comparator.comparing(GDPDto::getYear).reversed());
+    // Sort by year (if needed later)
+    // container.sort(Comparator.comparing(GDPDto::getYear));
 
     return GDP.builder().values(container).build();
   }
