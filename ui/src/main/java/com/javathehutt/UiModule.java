@@ -7,14 +7,12 @@ import com.javathehutt.dto.AgrEmplByCountryDto;
 import com.javathehutt.dto.GDPDto;
 import com.javathehutt.dto.helpers.Country;
 import com.javathehutt.helpers.ApiData;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
@@ -24,6 +22,7 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.json.JSONArray;
@@ -31,37 +30,42 @@ import org.json.JSONObject;
 
 public class UiModule extends Application {
 
-  private LineChart<String, Number> lineChart;
-  private XYChart.Series<String, Number> tractorsSeries;
-  private XYChart.Series<String, Number> gdpSeries;
+  private LineChart<Number, Number> lineChart;
+  private XYChart.Series<Number, Number> agricultureSeries;
+  private XYChart.Series<Number, Number> gdpSeries;
   private ComboBox<Integer> startYearDropdown;
   private ComboBox<Integer> endYearDropdown;
+  private NumberAxis xAxis;
 
   @Override
   public void start(Stage primaryStage) {
     primaryStage.setTitle("Analyticsapp");
-
-    CategoryAxis xAxis = new CategoryAxis();
+    xAxis = new NumberAxis();
     xAxis.setLabel("Year");
 
-    NumberAxis yAxis = new NumberAxis();
-    yAxis.setLabel("Value");
+    NumberAxis yAxisGDP = new NumberAxis();
+    yAxisGDP.setLabel("GDP (Billions of USD)");
 
-    // LineChart for tractors and GDP
-    lineChart = new LineChart<>(xAxis, yAxis);
-    lineChart.setTitle("Number of Tractors and GDP");
+    NumberAxis yAxisAgriculture = new NumberAxis();
+    yAxisAgriculture.setLabel("Agriculture % of total employment");
+
+    // LineChart for primary Y axis GDP data
+    lineChart = new LineChart<>(xAxis, yAxisGDP);
     lineChart.setAnimated(false);
 
-    tractorsSeries = new XYChart.Series<>();
-    tractorsSeries.setName("Tractors");
-
+    // Create the series for GDP
     gdpSeries = new XYChart.Series<>();
     gdpSeries.setName("GDP");
 
-    List<XYChart.Series<String, Number>> seriesList = new ArrayList<>();
-    seriesList.add(gdpSeries);
-    seriesList.add(tractorsSeries);
-    lineChart.getData().addAll(seriesList);
+    // Create the series for agriculture
+    agricultureSeries = new XYChart.Series<>();
+    agricultureSeries.setName("Agriculture Employment");
+
+    lineChart.getData().add(gdpSeries);
+
+    // Create the MultipleAxesLineChart
+    LineChartModule LineChartModule = new LineChartModule(lineChart, Color.BLUE);
+    LineChartModule.addSeries(agricultureSeries, Color.GREEN);
 
     // Dropdown menu for countries
     ComboBox<Country> countryDropdown = new ComboBox<>();
@@ -138,7 +142,7 @@ public class UiModule extends Application {
     Label dashLabel = new Label("-");
     HBox yearInputBox = new HBox(10, startYearDropdown, dashLabel, endYearDropdown);
     HBox inputBox = new HBox(10, countryDropdown, yearInputBox);
-    VBox vbox = new VBox(inputBox, lineChart);
+    VBox vbox = new VBox(10, inputBox, LineChartModule);
     Scene scene = new Scene(vbox, 800, 600);
 
     primaryStage.setScene(scene);
@@ -160,8 +164,12 @@ public class UiModule extends Application {
 
   private void updateView(String countryIsoCode, int startYear, int endYear) {
     Random random = new Random();
-    tractorsSeries.getData().clear();
+    agricultureSeries.getData().clear();
     gdpSeries.getData().clear();
+
+    xAxis.setLowerBound(startYear);
+    xAxis.setUpperBound(endYear);
+    xAxis.setTickUnit(1);
 
     // Fast implementation, move if needed in multiple places
     ApiServiceFactory apiFactory = new ApiServiceFactory();
@@ -184,14 +192,14 @@ public class UiModule extends Application {
 
     System.out.println(gdpData);
 
-    // Add agriculture data to tractorsSeries
+    // Add agriculture data to agricultureSeries
     if (agricultureData != null && !agricultureData.getValues().isEmpty()) {
       for (AgrEmplByCountryDto agrDto : agricultureData.getValues()) {
         int year = agrDto.getYear();
         if (year >= startYear && year <= endYear) {
           Double value = agrDto.getValue();
           if (value != null) {
-            tractorsSeries.getData().add(new XYChart.Data<>(String.valueOf(year), value));
+            agricultureSeries.getData().add(new XYChart.Data<>(year, value));
           }
         }
       }
@@ -205,7 +213,7 @@ public class UiModule extends Application {
         if (year >= startYear && year <= endYear) {
           Double value = gdpDto.getValue();
           if (value != null) {
-            gdpSeries.getData().add(new XYChart.Data<>(String.valueOf(year), value));
+            gdpSeries.getData().add(new XYChart.Data<>(year, value));
           }
         }
       }
