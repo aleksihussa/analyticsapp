@@ -4,16 +4,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.javathehutt.AgrEmplByCountry;
+import com.javathehutt.dto.AgrEmplByCountryDto;
 import java.util.List;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import com.javathehutt.AgrEmplByCountry;
-import com.javathehutt.dto.AgrEmplByCountryDto;
 
 class AgrEmplByCountryConverterTest {
 
@@ -33,7 +30,7 @@ class AgrEmplByCountryConverterTest {
 
   void initWorking() {
 
-    //usa mock data
+    // usa mock data
     JSONArray agrJSONUSA = new JSONArray();
     JSONObject agrObjUSA = new JSONObject();
 
@@ -46,7 +43,8 @@ class AgrEmplByCountryConverterTest {
 
     JSONObject indicatorUSA = new JSONObject();
     indicatorUSA.put("id", "SL.AGR.EMPL.ZS");
-    indicatorUSA.put("value", "Employment in agriculture (% of total employment) (modeled ILO estimate)");
+    indicatorUSA.put(
+        "value", "Employment in agriculture (% of total employment) (modeled ILO estimate)");
     agrObjUSA.put("indicator", indicatorUSA);
 
     JSONObject countryUSA = new JSONObject();
@@ -118,8 +116,10 @@ class AgrEmplByCountryConverterTest {
     assertEquals(2, dtoUSA.getDecimal());
 
     assertEquals("SL.AGR.EMPL.ZS", dtoUSA.getIndicator().getId());
-    assertEquals("Employment in agriculture (% of total employment) (modeled ILO estimate)", dtoUSA.getIndicator().getValue());
-    
+    assertEquals(
+        "Employment in agriculture (% of total employment) (modeled ILO estimate)",
+        dtoUSA.getIndicator().getValue());
+
     assertEquals("US", dtoUSA.getCountry().getId());
     assertEquals("United States", dtoUSA.getCountry().getValue());
 
@@ -133,7 +133,7 @@ class AgrEmplByCountryConverterTest {
 
     assertEquals("silly test text", dtoFI.getIndicator().getId());
     assertEquals("another silly test text", dtoFI.getIndicator().getValue());
-    
+
     assertEquals("FI", dtoFI.getCountry().getId());
     assertEquals("Finland", dtoFI.getCountry().getValue());
   }
@@ -150,7 +150,7 @@ class AgrEmplByCountryConverterTest {
 
   @Test
   public void doForwardTestInvalidDataFormat() {
-    //usa mock data, incorrect formats
+    // usa mock data, incorrect formats
     JSONArray agrJSONUSA = new JSONArray();
     JSONObject agrObjUSA = new JSONObject();
 
@@ -163,7 +163,8 @@ class AgrEmplByCountryConverterTest {
 
     JSONObject indicatorUSA = new JSONObject();
     indicatorUSA.put("id", "SL.AGR.EMPL.ZS");
-    indicatorUSA.put("value", "Employment in agriculture (% of total employment) (modeled ILO estimate)");
+    indicatorUSA.put(
+        "value", "Employment in agriculture (% of total employment) (modeled ILO estimate)");
     agrObjUSA.put("indicator", indicatorUSA);
 
     JSONObject countryUSA = new JSONObject();
