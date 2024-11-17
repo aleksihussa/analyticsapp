@@ -6,6 +6,7 @@ import com.javathehutt.converters.GDPConverter;
 import com.javathehutt.dto.AgrEmplByCountryDto;
 import com.javathehutt.dto.GDPDto;
 import com.javathehutt.dto.helpers.Country;
+import com.javathehutt.exceptions.MissingKeyException;
 import com.javathehutt.helpers.ApiData;
 import java.util.List;
 import java.util.Random;
@@ -198,11 +199,15 @@ public class UiModule extends Application {
     System.out.println(agricultureData);
 
     // Fetch GDP data for the selected country
-    ApiData gdpApiData = gdpService.fetchData(countryIsoCode, startYear, endYear);
-    JSONObject gdpJSON = gdpApiData.getJsonObject();
-    GDP gdpData = new GDPConverter().doForward(gdpJSON);
-
-    System.out.println(gdpData);
+    GDP gdpData = null;
+    try {
+      ApiData gdpApiData = gdpService.fetchData(countryIsoCode, startYear, endYear);
+      JSONObject gdpJSON = gdpApiData.getJsonObject();
+      gdpData = new GDPConverter().doForward(gdpJSON);
+      System.out.println(gdpData);
+    } catch (MissingKeyException e) {
+      System.err.println(e);
+    }
 
     // Add agriculture data to agricultureSeries
     if (agricultureData != null && !agricultureData.getValues().isEmpty()) {
