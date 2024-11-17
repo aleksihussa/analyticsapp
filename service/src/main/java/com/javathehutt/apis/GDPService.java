@@ -1,6 +1,7 @@
 package com.javathehutt.apis;
 
 import com.javathehutt.Service;
+import com.javathehutt.exceptions.MissingKeyException;
 import com.javathehutt.helpers.ApiData;
 import org.json.JSONObject;
 
@@ -35,13 +36,15 @@ public class GDPService implements ApiService {
     }
 
     JSONObject bodyJson = new JSONObject(responseBody);
+    if (!bodyJson.has("values")) {
+      throw new MissingKeyException(
+          String.format("Country code %s has no GDP data", countryIso3Code));
+    }
+
     JSONObject valueObj = bodyJson.getJSONObject("values");
     JSONObject gdpObj = valueObj.getJSONObject("NGDPD");
     JSONObject gdpData = gdpObj.getJSONObject(countryIso3Code);
 
-    // Do something with data
-
-    // System.out.println(new GDPConverter().doForward(gdpData));
     return new ApiData(gdpData);
   }
 }
