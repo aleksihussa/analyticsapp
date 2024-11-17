@@ -236,6 +236,11 @@ public class UiModule extends Application {
       }
     } else {
       System.err.println("Failed to load GDP data for country: " + countryIsoCode);
+      System.out.println(gdpData);
+      lineChart.getData().remove(gdpSeries);
+      gdpSeries.getData().clear();
+      lineChart.getData().add(gdpSeries);
+      gdpSeries.getNode().lookup(".chart-series-line").setStyle("-fx-stroke: #00eb52;");
     }
   }
 
