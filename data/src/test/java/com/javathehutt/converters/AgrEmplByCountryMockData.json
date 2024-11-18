@@ -1,0 +1,136 @@
+[
+    [
+        {
+        "indicator": {
+            "id": "silly test text",
+            "value": "another silly test text"
+        },
+        "country": {
+            "id": "FI",
+            "value": "Finland"
+        },
+        "countryiso3code": "FIN",
+        "date": "2020",
+        "value": 5.52699004089471,
+        "unit": "test unit",
+        "obs_status": "test status",
+        "decimal": 5
+        },
+        {
+        "indicator": {
+            "id": "SL.AGR.EMPL.ZS",
+            "value": "Employment in agriculture (% of total employment) (modeled ILO estimate)"
+        },
+        "country": {
+            "id": "FI",
+            "value": "Finland"
+        },
+        "countryiso3code": "FIN",
+        "date": "2007",
+        "value": 4.53694130205845,
+        "unit": "",
+        "obs_status": "",
+        "decimal": 0
+        },
+        {
+        "indicator": {
+            "id": "SL.AGR.EMPL.ZS",
+            "value": "Employment in agriculture (% of total employment) (modeled ILO estimate)"
+        },
+        "country": {
+            "id": "FI",
+            "value": "Finland"
+        },
+        "countryiso3code": "FIN",
+        "date": "2006",
+        "value": 4.67007987694193,
+        "unit": "",
+        "obs_status": "",
+        "decimal": 0
+        },
+        {
+        "indicator": {
+            "id": "SL.AGR.EMPL.ZS",
+            "value": "Employment in agriculture (% of total employment) (modeled ILO estimate)"
+        },
+        "country": {
+            "id": "FI",
+            "value": "Finland"
+        },
+        "countryiso3code": "FIN",
+        "date": "2005",
+        "value": 4.82510492377867,
+        "unit": "",
+        "obs_status": "",
+        "decimal": 0
+        }
+    ],
+    [
+        {
+          "indicator": {
+            "id": "SL.AGR.EMPL.ZS",
+            "value": "Employment in agriculture (% of total employment) (modeled ILO estimate)"
+          },
+          "country": {
+            "id": "US",
+            "value": "United States"
+          },
+          "countryiso3code": "USA",
+          "date": "2004",
+          "value": 45.5,
+          "unit": "",
+          "obs_status": "",
+          "decimal": 2
+        },
+        {
+          "indicator": {
+            "id": "SL.AGR.EMPL.ZS",
+            "value": "Employment in agriculture (% of total employment) (modeled ILO estimate)"
+          },
+          "country": {
+            "id": "US",
+            "value": "United States"
+          },
+          "countryiso3code": "USA",
+          "date": "2003",
+          "value": 1.81033470626561,
+          "unit": "",
+          "obs_status": "",
+          "decimal": 0
+        },
+        {
+          "indicator": {
+            "id": "SL.AGR.EMPL.ZS",
+            "value": "Employment in agriculture (% of total employment) (modeled ILO estimate)"
+          },
+          "country": {
+            "id": "US",
+            "value": "United States"
+          },
+          "countryiso3code": "USA",
+          "date": "2002",
+          "value": 1.95592576519708,
+          "unit": "",
+          "obs_status": "",
+          "decimal": 0
+        }
+    ],
+    [
+        {
+          "indicator": {
+            "id": "SL.AGR.EMPL.ZS",
+            "value": "Employment in agriculture (% of total employment) (modeled ILO estimate)"
+          },
+          "country": {
+            "id": "US",
+            "value": "United States"
+          },
+          "countryiso3code": "USA",
+          "date": "vuosi",
+          "value": 45.5,
+          "unit": "",
+          "obs_status": "",
+          "decimal": 2
+        }
+    ]
+]

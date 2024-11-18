@@ -3,88 +3,95 @@ package com.javathehutt.converters;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import com.javathehutt.GDP;
 import com.javathehutt.dto.GDPDto;
-import java.util.ArrayList;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class GDPConverterTest {
 
-  private GDPConverter converter;
+  private static GDPConverter converter;
+  private static String filePathMockData;
 
-  private GDP resultUSA;
-
-  private GDP resultFI;
+  private static GDP resultOne;
+  private static GDP resultTwo;
 
   @BeforeEach
   void init() {
     converter = new GDPConverter();
+    filePathMockData =
+      "src\\test\\java\\com\\javathehutt\\converters\\GDPMockData.json";
+
+    try {
+      String strMock = new String(Files.readAllBytes(Paths.get(filePathMockData)));
+      JSONArray combinedArray = new JSONArray(strMock);
+
+      JSONObject GDPObjIncorrect = combinedArray.getJSONObject(0);
+      JSONObject GDPObjTwo = combinedArray.getJSONObject(1);
+
+      resultOne = converter.doForward(GDPObjIncorrect);
+      resultTwo = converter.doForward(GDPObjTwo);
+
+    } catch(IOException e) {
+      e.printStackTrace();
+    }
   }
 
-  void initWorking() {
-
-    // usa mock data
-    JSONObject GDPObjUSA = new JSONObject();
-
-    GDPObjUSA.put("1980", 10.105);
-    GDPObjUSA.put("1981", 11.123);
-    GDPObjUSA.put("1983", 12.456);
-
-    resultUSA = converter.doForward(GDPObjUSA);
-
-    // fin mock data
-    JSONObject GDPObjFIN = new JSONObject();
-
-    GDPObjFIN.put("2000", 1);
-    GDPObjFIN.put("2001", 1.2);
-    GDPObjFIN.put("2002", 1.234);
-    GDPObjFIN.put("2003", 1.23);
-
-    resultFI = converter.doForward(GDPObjFIN);
+  @AfterEach
+  void delete() {
+    resultOne = null;
+    resultTwo = null;
   }
 
   @Test
   public void doForwardTestResultShouldNotBeNull() {
-    initWorking();
-    assertNotNull(resultUSA);
-    assertNotNull(resultFI);
+    assertNotNull(resultOne);
+    assertNotNull(resultTwo);
   }
 
   @Test
   public void doForwardTestResultAmount() {
-    initWorking();
-    assertEquals(3, resultUSA.getValues().size());
-    assertEquals(4, resultFI.getValues().size());
+    assertEquals(3, resultOne.getValues().size());
+    assertEquals(4, resultTwo.getValues().size());
   }
 
   @Test
   public void doForwardTestDataEntries() {
-    initWorking();
+    // in dtos the years go in reverse order, from highest to lowest.
+    // this is the reason for i and j going in different directions
 
-    ArrayList<GDPDto> dtosUSA = resultUSA.getValues();
-    assertEquals(1980, dtosUSA.get(2).getYear());
-    assertEquals(1981, dtosUSA.get(1).getYear());
-    assertEquals(1983, dtosUSA.get(0).getYear());
+    ArrayList<GDPDto> dtosOne = resultOne.getValues();
+    List<Integer> yearsOne = List.of(1980, 1981, 1982);
+    List<Double> valuesOne = List.of(10.105, 11.123, 12.456);
 
-    assertEquals(10.105, dtosUSA.get(2).getValue());
-    assertEquals(11.123, dtosUSA.get(1).getValue());
-    assertEquals(12.456, dtosUSA.get(0).getValue());
+    int i = 0;
+    for(int j = dtosOne.size() - 1; j >= 0; j--) {
+      assertEquals(yearsOne.get(i), dtosOne.get(j).getYear());
+      assertEquals(valuesOne.get(i), dtosOne.get(j).getValue());
+      i++;
+    }
 
-    ArrayList<GDPDto> dtosFI = resultFI.getValues();
-    assertEquals(2000, dtosFI.get(3).getYear());
-    assertEquals(2001, dtosFI.get(2).getYear());
-    assertEquals(2002, dtosFI.get(1).getYear());
-    assertEquals(2003, dtosFI.get(0).getYear());
-
-    assertEquals(1, dtosFI.get(3).getValue());
-    assertEquals(1.2, dtosFI.get(2).getValue());
-    assertEquals(1.234, dtosFI.get(1).getValue());
-    assertEquals(1.23, dtosFI.get(0).getValue());
+    ArrayList<GDPDto> dtosTwo = resultTwo.getValues();
+    List<Integer> yearsTwo = List.of(2000, 2001, 2002, 2003);
+    List<Double> valuesTwo = List.of(1.0, 1.2, 2.23, 1.234);
+    
+    i = 0;
+    for(int j = dtosTwo.size() - 1; j >= 0; j--) {
+      assertEquals(yearsTwo.get(i), dtosTwo.get(j).getYear());
+      assertEquals(valuesTwo.get(i), dtosTwo.get(j).getValue());
+      i++;
+    }
   }
 
   @Test
@@ -99,13 +106,13 @@ public class GDPConverterTest {
 
   @Test
   public void doForwardTestInvalidDataFormat() {
-    // usa mock data, incorrect formats
-    JSONObject GDPObjUSA = new JSONObject();
+    // mock data, incorrect formats
+    JSONObject GDPObjIncorrect = new JSONObject();
 
-    GDPObjUSA.put("year", 10.105);
-    GDPObjUSA.put("1981", 11.123);
-    GDPObjUSA.put("1983", "carlos");
+    GDPObjIncorrect.put("year", 10.105);
+    GDPObjIncorrect.put("1981", 11.123);
+    GDPObjIncorrect.put("1983", "carlos");
 
-    assertThrows(JSONException.class, () -> converter.doForward(GDPObjUSA));
+    assertThrows(JSONException.class, () -> converter.doForward(GDPObjIncorrect));
   }
 }
