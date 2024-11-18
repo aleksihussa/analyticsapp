@@ -192,11 +192,15 @@ public class UiModule extends Application {
     ApiService agricultureService = apiFactory.createService("agriculture");
 
     // Fetch agriculture data for the selected country
-    ApiData agricultureApiData = agricultureService.fetchData(countryIsoCode, startYear, endYear);
-    JSONArray agricultureJSON = agricultureApiData.getJsonArray();
-    AgrEmplByCountry agricultureData = new AgrEmplByCountryConverter().doForward(agricultureJSON);
-
-    System.out.println(agricultureData);
+    AgrEmplByCountry agricultureData = null;
+    try {
+      ApiData agricultureApiData = agricultureService.fetchData(countryIsoCode, startYear, endYear);
+      JSONArray agricultureJSON = agricultureApiData.getJsonArray();
+      agricultureData = new AgrEmplByCountryConverter().doForward(agricultureJSON);
+      System.out.println(agricultureData);
+    } catch (MissingKeyException e) {
+      System.err.println(e);
+    }
 
     // Fetch GDP data for the selected country
     GDP gdpData = null;
@@ -236,7 +240,8 @@ public class UiModule extends Application {
       }
     } else {
       System.err.println("Failed to load GDP data for country: " + countryIsoCode);
-      System.out.println(gdpData);
+
+      // Remove data line left from previous valid country
       lineChart.getData().remove(gdpSeries);
       gdpSeries.getData().clear();
       lineChart.getData().add(gdpSeries);
