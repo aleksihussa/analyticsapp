@@ -147,6 +147,22 @@ public class LineChartModule extends StackPane {
     backgroundCharts.add(lineChart);
   }
 
+  public void removeSeries(XYChart.Series series) {
+    LineChart chartToRemove = null;
+    for (LineChart chart : backgroundCharts) {
+      if (chart.getData().contains(series)) {
+        chartToRemove = chart;
+        break;
+      }
+    }
+
+    if (chartToRemove != null) {
+      chartToRemove.getData().remove(series);
+      backgroundCharts.remove(chartToRemove);
+      this.getChildren().remove(chartToRemove);
+    }
+  }
+
   // Style background chart
   private void styleBackgroundChart(LineChart lineChart, String lineColor) {
     Node contentBackground = lineChart.lookup(".chart-content").lookup(".chart-plot-background");

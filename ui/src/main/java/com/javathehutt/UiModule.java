@@ -36,6 +36,7 @@ public class UiModule extends Application {
   private ComboBox<Integer> startYearDropdown;
   private ComboBox<Integer> endYearDropdown;
   private NumberAxis xAxis;
+  private LineChartModule LineChartModule;
 
   @Override
   public void start(Stage primaryStage) {
@@ -62,7 +63,7 @@ public class UiModule extends Application {
     lineChart.getData().add(gdpSeries);
 
     // Create the MultipleAxesLineChart
-    LineChartModule LineChartModule =
+    LineChartModule =
         new LineChartModule(lineChart, "#00eb52", "GDP and Agriculture Employment", "Year");
     LineChartModule.addSeries(agricultureSeries, "#ff7f50");
 
@@ -215,19 +216,29 @@ public class UiModule extends Application {
 
     // Add agriculture data to agricultureSeries
     if (agricultureData != null && !agricultureData.getValues().isEmpty()) {
+      boolean hasValues = false;
+
       for (AgrEmplByCountryDto agrDto : agricultureData.getValues()) {
         int year = agrDto.getYear();
         if (year >= startYear && year <= endYear) {
           Double value = agrDto.getValue();
           if (value != null) {
             agricultureSeries.getData().add(new XYChart.Data<>(year, value));
+            hasValues = true;
           }
         }
+      }
+
+      if (!hasValues) {
+        System.err.println("Country " + countryIsoCode + " has no agriculture data values");
+        LineChartModule.removeSeries(agricultureSeries);
+        LineChartModule.addSeries(agricultureSeries, "#ff7f50");
       }
     } else {
       System.err.println("Failed to load agriculture data for country: " + countryIsoCode);
     }
 
+    // Add GDP data to gdpSeries
     if (gdpData != null && !gdpData.getValues().isEmpty()) {
       for (GDPDto gdpDto : gdpData.getValues()) {
         int year = gdpDto.getYear();
