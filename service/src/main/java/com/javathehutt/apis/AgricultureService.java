@@ -5,6 +5,7 @@
 package com.javathehutt.apis;
 
 import com.javathehutt.Service;
+import com.javathehutt.exceptions.MissingKeyException;
 import com.javathehutt.helpers.ApiData;
 import org.json.JSONArray;
 
@@ -43,11 +44,14 @@ public class AgricultureService implements ApiService {
     }
 
     JSONArray bodyJson = new JSONArray(responseBody);
+
+    if (bodyJson.isNull(1)) {
+      throw new MissingKeyException(
+          String.format("Country code %s has no agriculture data", countryIso3Code));
+    }
+
     JSONArray agricultureData = bodyJson.getJSONArray(1);
 
-    // Do something with data
-
-    // System.out.println(new AgrEmplByCountryConverter().doForward(agricultureData));
     return new ApiData(agricultureData);
   }
 }
