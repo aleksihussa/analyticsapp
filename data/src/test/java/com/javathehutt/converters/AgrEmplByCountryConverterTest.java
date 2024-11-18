@@ -6,110 +6,82 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.javathehutt.AgrEmplByCountry;
 import com.javathehutt.dto.AgrEmplByCountryDto;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import org.json.JSONArray;
-import org.json.JSONObject;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class AgrEmplByCountryConverterTest {
 
-  private AgrEmplByCountryConverter converter;
+  private static String filePathMockData;
 
-  private AgrEmplByCountry resultUSA;
-  private List<AgrEmplByCountryDto> valuesUSA;
+  private static AgrEmplByCountryConverter converter;
 
-  private AgrEmplByCountry resultFI;
-  private List<AgrEmplByCountryDto> valuesFI;
+  private static AgrEmplByCountry resultUSA;
+  private static List<AgrEmplByCountryDto> valuesUSA;
+
+  private static AgrEmplByCountry resultFI;
+  private static List<AgrEmplByCountryDto> valuesFI;
+
+  private static JSONArray agrJSONIncorrect;
 
   @BeforeEach
   void init() {
     // initialize converter to use for mock data
     converter = new AgrEmplByCountryConverter();
+    filePathMockData =
+        "src\\test\\java\\com\\javathehutt\\converters\\AgrEmplByCountryMockData.json";
+    try {
+      String strMock = new String(Files.readAllBytes(Paths.get(filePathMockData)));
+
+      JSONArray combinedArray = new JSONArray(strMock);
+
+      JSONArray agrJSONFI = combinedArray.getJSONArray(0);
+      JSONArray agrJSONUSA = combinedArray.getJSONArray(1);
+      agrJSONIncorrect = combinedArray.getJSONArray(2);
+
+      // convert JSON array to AgrEmplByCountry object
+      resultUSA = converter.doForward(agrJSONUSA);
+      valuesUSA = resultUSA.getValues();
+
+      // convert JSON array to AgrEmplByCountry object
+      resultFI = converter.doForward(agrJSONFI);
+      valuesFI = resultFI.getValues();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
-  void initWorking() {
-
-    // usa mock data
-    JSONArray agrJSONUSA = new JSONArray();
-    JSONObject agrObjUSA = new JSONObject();
-
-    agrObjUSA.put("countryiso3code", "USA");
-    agrObjUSA.put("date", "2022");
-    agrObjUSA.put("value", 45.5);
-    agrObjUSA.put("unit", "");
-    agrObjUSA.put("obs_status", "");
-    agrObjUSA.put("decimal", 2);
-
-    JSONObject indicatorUSA = new JSONObject();
-    indicatorUSA.put("id", "SL.AGR.EMPL.ZS");
-    indicatorUSA.put(
-        "value", "Employment in agriculture (% of total employment) (modeled ILO estimate)");
-    agrObjUSA.put("indicator", indicatorUSA);
-
-    JSONObject countryUSA = new JSONObject();
-    countryUSA.put("id", "US");
-    countryUSA.put("value", "United States");
-    agrObjUSA.put("country", countryUSA);
-
-    agrJSONUSA.put(agrObjUSA);
-
-    // convert JSON array to AgrEmplByCountry object
-    resultUSA = converter.doForward(agrJSONUSA);
-    valuesUSA = resultUSA.getValues();
-
-    // finland mock data
-
-    JSONArray agrJSONFI = new JSONArray();
-    JSONObject agrObjFI = new JSONObject();
-
-    agrObjFI.put("countryiso3code", "FI");
-    agrObjFI.put("date", "2020");
-    agrObjFI.put("value", 5.52699004089471);
-    agrObjFI.put("unit", "test unit");
-    agrObjFI.put("obs_status", "test status");
-    agrObjFI.put("decimal", 5);
-
-    JSONObject indicatorFI = new JSONObject();
-    indicatorFI.put("id", "silly test text");
-    indicatorFI.put("value", "another silly test text");
-    agrObjFI.put("indicator", indicatorFI);
-
-    JSONObject countryFI = new JSONObject();
-    countryFI.put("id", "FI");
-    countryFI.put("value", "Finland");
-    agrObjFI.put("country", countryFI);
-
-    // put object twice to check if size is right
-    agrJSONFI.put(agrObjFI);
-    agrJSONFI.put(agrObjFI);
-
-    // convert JSON array to AgrEmplByCountry object
-    resultFI = converter.doForward(agrJSONFI);
-    valuesFI = resultFI.getValues();
+  @AfterEach
+  void delete() {
+    resultUSA = null;
+    resultFI = null;
+    valuesUSA = null;
+    valuesFI = null;
   }
 
   @Test
   public void doForwardTestResultShouldNotBeNull() {
-    initWorking();
     assertNotNull(resultUSA);
     assertNotNull(resultFI);
   }
 
   @Test
   public void doForwardTestValueInputAmount() {
-    initWorking();
-    assertEquals(1, valuesUSA.size());
-    assertEquals(2, valuesFI.size());
+    assertEquals(3, valuesUSA.size());
+    assertEquals(4, valuesFI.size());
   }
 
   @Test
   public void doForwardTestDataEntries() {
-    initWorking();
 
     AgrEmplByCountryDto dtoUSA = valuesUSA.get(0);
     assertEquals("USA", dtoUSA.getCountryIso3Code());
-    assertEquals(2022, dtoUSA.getYear());
+    assertEquals(2004, dtoUSA.getYear());
     assertEquals(45.5, dtoUSA.getValue());
     assertEquals("", dtoUSA.getUnit());
     assertEquals("", dtoUSA.getObsStatus());
@@ -124,7 +96,8 @@ class AgrEmplByCountryConverterTest {
     assertEquals("United States", dtoUSA.getCountry().getValue());
 
     AgrEmplByCountryDto dtoFI = valuesFI.get(0);
-    assertEquals("FI", dtoFI.getCountryIso3Code());
+
+    assertEquals("FIN", dtoFI.getCountryIso3Code());
     assertEquals(2020, dtoFI.getYear());
     assertEquals(5.52699004089471, dtoFI.getValue());
     assertEquals("test unit", dtoFI.getUnit());
@@ -151,29 +124,7 @@ class AgrEmplByCountryConverterTest {
   @Test
   public void doForwardTestInvalidDataFormat() {
     // usa mock data, incorrect formats
-    JSONArray agrJSONUSA = new JSONArray();
-    JSONObject agrObjUSA = new JSONObject();
-
-    agrObjUSA.put("countryiso3code", "USA");
-    agrObjUSA.put("date", "vuosi");
-    agrObjUSA.put("value", 45.5);
-    agrObjUSA.put("unit", "");
-    agrObjUSA.put("obs_status", "");
-    agrObjUSA.put("decimal", 2);
-
-    JSONObject indicatorUSA = new JSONObject();
-    indicatorUSA.put("id", "SL.AGR.EMPL.ZS");
-    indicatorUSA.put(
-        "value", "Employment in agriculture (% of total employment) (modeled ILO estimate)");
-    agrObjUSA.put("indicator", indicatorUSA);
-
-    JSONObject countryUSA = new JSONObject();
-    countryUSA.put("id", "US");
-    countryUSA.put("value", "United States");
-    agrObjUSA.put("country", countryUSA);
-
-    agrJSONUSA.put(agrObjUSA);
-
-    assertThrows(NumberFormatException.class, () -> converter.doForward(agrJSONUSA));
+    assertThrows(NumberFormatException.class,
+      () -> converter.doForward(agrJSONIncorrect));
   }
 }
