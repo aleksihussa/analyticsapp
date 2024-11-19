@@ -34,7 +34,7 @@ class AgrEmplByCountryConverterTest {
     // initialize converter to use for mock data
     converter = new AgrEmplByCountryConverter();
     filePathMockData =
-        "src\\test\\java\\com\\javathehutt\\converters\\AgrEmplByCountryMockData.json";
+        "src/test/java/com/javathehutt/converters/AgrEmplByCountryMockData.json";
     try {
       String strMock = new String(Files.readAllBytes(Paths.get(filePathMockData)));
 
