@@ -31,7 +31,7 @@ public class GDPConverterTest {
   void init() {
     converter = new GDPConverter();
     filePathMockData =
-      "src\\test\\java\\com\\javathehutt\\converters\\GDPMockData.json";
+      "src/test/java/com/javathehutt/converters/GDPMockData.json";
 
     try {
       String strMock = new String(Files.readAllBytes(Paths.get(filePathMockData)));
