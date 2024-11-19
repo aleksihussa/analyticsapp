@@ -3,15 +3,14 @@ package com.javathehutt.converters;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import com.javathehutt.GDP;
 import com.javathehutt.dto.GDPDto;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,8 +29,7 @@ public class GDPConverterTest {
   @BeforeEach
   void init() {
     converter = new GDPConverter();
-    filePathMockData =
-      "src/test/java/com/javathehutt/converters/GDPMockData.json";
+    filePathMockData = "src/test/java/com/javathehutt/converters/GDPMockData.json";
 
     try {
       String strMock = new String(Files.readAllBytes(Paths.get(filePathMockData)));
@@ -43,7 +41,7 @@ public class GDPConverterTest {
       resultOne = converter.doForward(GDPObjIncorrect);
       resultTwo = converter.doForward(GDPObjTwo);
 
-    } catch(IOException e) {
+    } catch (IOException e) {
       e.printStackTrace();
     }
   }
@@ -76,7 +74,7 @@ public class GDPConverterTest {
     List<Double> valuesOne = List.of(10.105, 11.123, 12.456);
 
     int i = 0;
-    for(int j = dtosOne.size() - 1; j >= 0; j--) {
+    for (int j = dtosOne.size() - 1; j >= 0; j--) {
       assertEquals(yearsOne.get(i), dtosOne.get(j).getYear());
       assertEquals(valuesOne.get(i), dtosOne.get(j).getValue());
       i++;
@@ -85,9 +83,9 @@ public class GDPConverterTest {
     ArrayList<GDPDto> dtosTwo = resultTwo.getValues();
     List<Integer> yearsTwo = List.of(2000, 2001, 2002, 2003);
     List<Double> valuesTwo = List.of(1.0, 1.2, 2.23, 1.234);
-    
+
     i = 0;
-    for(int j = dtosTwo.size() - 1; j >= 0; j--) {
+    for (int j = dtosTwo.size() - 1; j >= 0; j--) {
       assertEquals(yearsTwo.get(i), dtosTwo.get(j).getYear());
       assertEquals(valuesTwo.get(i), dtosTwo.get(j).getValue());
       i++;
