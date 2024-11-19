@@ -1,6 +1,8 @@
 package com.javathehutt;
+
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.javathehutt.dto.helpers.Country;
 import java.util.List;
 import org.junit.jupiter.api.BeforeAll;

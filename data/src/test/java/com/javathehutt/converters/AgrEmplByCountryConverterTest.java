@@ -33,8 +33,7 @@ class AgrEmplByCountryConverterTest {
   void init() {
     // initialize converter to use for mock data
     converter = new AgrEmplByCountryConverter();
-    filePathMockData =
-        "src/test/java/com/javathehutt/converters/AgrEmplByCountryMockData.json";
+    filePathMockData = "src/test/java/com/javathehutt/converters/AgrEmplByCountryMockData.json";
     try {
       String strMock = new String(Files.readAllBytes(Paths.get(filePathMockData)));
 
@@ -124,7 +123,6 @@ class AgrEmplByCountryConverterTest {
   @Test
   public void doForwardTestInvalidDataFormat() {
     // usa mock data, incorrect formats
-    assertThrows(NumberFormatException.class,
-      () -> converter.doForward(agrJSONIncorrect));
+    assertThrows(NumberFormatException.class, () -> converter.doForward(agrJSONIncorrect));
   }
 }
