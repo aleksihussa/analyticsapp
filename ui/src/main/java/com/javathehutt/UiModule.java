@@ -176,7 +176,11 @@ public class UiModule extends Application {
       if (startYear <= endYear) {
         updateView(selectedCountry.getId(), startYear, endYear);
       } else {
-        System.err.println("Invalid year range.");
+        String yearErrorMessage = "Chart is not updated: Invalid year range";
+        if (!errorLabel.getText().contains(yearErrorMessage)) {
+          displayError(yearErrorMessage);
+        }
+        System.err.println(yearErrorMessage);
       }
     }
   }
