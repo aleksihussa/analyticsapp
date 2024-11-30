@@ -4,10 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.javathehutt.exceptions.MissingKeyException;
 import com.javathehutt.helpers.ApiData;
 import java.math.BigDecimal;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -71,7 +71,9 @@ class AgricultureServiceTest {
   @Test
   void fetchDataTestWrongIso3CodeShouldThrow() {
     String invalidIso3Code = "sillycode";
+
     assertThrows(
-        JSONException.class, () -> agrService.fetchData(invalidIso3Code, startYearOne, endYearOne));
+        MissingKeyException.class,
+        () -> agrService.fetchData(invalidIso3Code, startYearOne, endYearOne));
   }
 }
