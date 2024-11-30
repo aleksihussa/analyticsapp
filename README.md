@@ -48,5 +48,5 @@ docker build -t analyticsapp:latest .
 To run the application from the Docker image and expose the VNC server on port 5900, use:
 
 ```sh
-  docker run -p 5900:5900 --rm analyticsapp:latest
+docker run -p 5900:5900 --rm analyticsapp:latest
 ```
