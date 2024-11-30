@@ -37,6 +37,7 @@ public class UiModule extends Application {
   private ComboBox<Integer> endYearDropdown;
   private NumberAxis xAxis;
   private LineChartModule LineChartModule;
+  private Label errorLabel;
 
   @Override
   public void start(Stage primaryStage) {
@@ -67,7 +68,9 @@ public class UiModule extends Application {
         new LineChartModule(lineChart, "#00eb52", "GDP and Agriculture Employment", "Year");
     LineChartModule.addSeries(agricultureSeries, "#ff7f50");
 
-    // Dropdown menu for countries
+    errorLabel = new Label();
+    errorLabel.setStyle("-fx-text-fill: red;");
+
     ComboBox<Country> countryDropdown = new ComboBox<>();
     Service service = new Service();
     List<Country> countries = service.getCountries();
@@ -156,7 +159,7 @@ public class UiModule extends Application {
     inputBox.setAlignment(Pos.CENTER);
 
     VBox chartModule = LineChartModule.getChartModule();
-    VBox vbox = new VBox(10, inputBox, chartModule);
+    VBox vbox = new VBox(10, inputBox, chartModule, errorLabel);
     vbox.setAlignment(Pos.TOP_CENTER);
 
     Scene scene = new Scene(vbox, 800, 600);
@@ -178,6 +181,19 @@ public class UiModule extends Application {
     }
   }
 
+  private void displayError(String errorMessage) {
+    if (errorLabel == null) {
+      System.err.println("Error label is not initialized.");
+      return;
+    }
+
+    if (!errorLabel.getText().isEmpty()) {
+      errorLabel.setText(errorLabel.getText() + "\n" + errorMessage);
+    } else {
+      errorLabel.setText(errorMessage);
+    }
+  }
+
   private void updateView(String countryIsoCode, int startYear, int endYear) {
     Random random = new Random();
     agricultureSeries.getData().clear();
@@ -186,6 +202,8 @@ public class UiModule extends Application {
     xAxis.setLowerBound(startYear);
     xAxis.setUpperBound(endYear);
     xAxis.setTickUnit(1);
+
+    errorLabel.setText("");
 
     // Fast implementation, move if needed in multiple places
     ApiServiceFactory apiFactory = new ApiServiceFactory();
@@ -201,6 +219,7 @@ public class UiModule extends Application {
       System.out.println(agricultureData);
     } catch (MissingKeyException e) {
       System.err.println(e);
+      displayError(e.getMessage());
     }
 
     // Fetch GDP data for the selected country
@@ -212,6 +231,7 @@ public class UiModule extends Application {
       System.out.println(gdpData);
     } catch (MissingKeyException e) {
       System.err.println(e);
+      displayError(e.getMessage());
     }
 
     // Add agriculture data to agricultureSeries
@@ -231,6 +251,7 @@ public class UiModule extends Application {
 
       if (!hasValues) {
         System.err.println("Country " + countryIsoCode + " has no agriculture data values");
+        displayError("Country code " + countryIsoCode.toUpperCase() + " has no agriculture data");
         LineChartModule.removeSeries(agricultureSeries);
         LineChartModule.addSeries(agricultureSeries, "#ff7f50");
       }
