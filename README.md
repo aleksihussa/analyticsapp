@@ -4,6 +4,11 @@
 
 Let's use java 21 and maven version in this range: 3.6.3 ... 3.9.9
 
+## Documentation
+
+Documentation can be found in file java_the_hutt_documentation.pdf.
+If the images in the documentation cannot be seen well, better versions are provided as separate .png files. 
+
 ## Commands
 
 #### Running Formatting Plugin and Tests
